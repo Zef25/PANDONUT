@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<!-- saved from url=(0012)about:srcdoc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+				
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<style>
+					body {
+						background-color: white; /* Ensure the iframe has a white background */
+					}
+				</style>
+				<script>
+					const CDN_WHITELIST = [
+						'cdn.jsdelivr.net',
+						'cdnjs.cloudflare.com',
+						'cdn.tailwindcss.com',
+						'unpkg.com',
+						'fonts.googleapis.com',
+						'd3js.org',
+						'cdn.babylonjs.com',
+						'html2canvas.hertzen.com',
+						'code.jquery.com',
+						'cdn.datatables.net',
+						'kit.fontawesome.com',
+						'code.createjs.com',
+						'cdn.plot.ly',
+						'fonts.gstatic.com',
+						'www.rgraph.net',
+						'api.mapbox.com',
+						'polyfill.io',
+						'cdn.quilljs.com',
+						'picsum.photos',
+						'esm.sh'
+					];
+
+					function isUrlInWhitelist(url) {
+						if (!url || typeof url !== 'string') {
+							return false;
+						}
+						try {
+							const urlObj = new URL(url);
+							const hostname = urlObj.hostname;
+							return CDN_WHITELIST.some(domain => hostname === domain || hostname.endsWith('.' + domain));
+						} catch (e) {
+							return false;
+						}
+					}
+
+					function proxyCdnUrl(url) {
+						if (!url || !url.startsWith('http')) {
+							return url;
+						}
+						if (url && (url.startsWith('http://') || url.startsWith('https://')) && !url.startsWith('https://artifacts-cdn.chatglm.site/')) {
+							const proxiedUrl = 'https://artifacts-cdn.chatglm.site/' + url;
+							return proxiedUrl;
+						}
+						return url;
+					}
+
+					const rawCreateElement = document.createElement;
+
+					document.createElement = function (tagName, ...args) {
+						const el = rawCreateElement.call(this, tagName, ...args);
+
+						if (tagName.toLowerCase() === 'script') {
+							const rawSetAttribute = el.setAttribute;
+							const rawGetAttribute = el.getAttribute;
+							let srcValue = '';
+							
+							el.setAttribute = function (name, value) {
+								if (name === 'src' && typeof value === 'string') {
+									value = proxyCdnUrl(value);
+									srcValue = value;
+								}
+								return rawSetAttribute.call(this, name, value);
+							};
+
+							Object.defineProperty(el, 'src', {
+								get: function() {
+									return srcValue || rawGetAttribute.call(this, 'src') || '';
+								},
+								set: function(value) {
+									if (typeof value === 'string') {
+										srcValue = proxyCdnUrl(value);
+										rawSetAttribute.call(this, 'src', srcValue);
+									} else {
+										srcValue = value;
+									}
+								},
+								configurable: true,
+								enumerable: true
+							});
+						}
+
+						if (tagName.toLowerCase() === 'link') {
+							const rawSetAttribute = el.setAttribute;
+							const rawGetAttribute = el.getAttribute;
+							let hrefValue = '';
+							
+							el.setAttribute = function (name, value) {
+								if (name === 'href' && typeof value === 'string') {
+									value = proxyCdnUrl(value);
+									hrefValue = value;
+								}
+								return rawSetAttribute.call(this, name, value);
+							};
+
+							Object.defineProperty(el, 'href', {
+								get: function() {
+									return hrefValue || rawGetAttribute.call(this, 'href') || '';
+								},
+								set: function(value) {
+									if (typeof value === 'string') {
+										hrefValue = proxyCdnUrl(value);
+										rawSetAttribute.call(this, 'href', hrefValue);
+									} else {
+										hrefValue = value;
+									}
+								},
+								configurable: true,
+								enumerable: true
+							});
+						}
+
+						return el;
+					};
+
+					const OriginalXMLHttpRequest = window.XMLHttpRequest;
+					window.XMLHttpRequest = function (...args) {
+						const xhr = new OriginalXMLHttpRequest(...args);
+						const rawOpen = xhr.open;
+
+						xhr.open = function (method, url, ...rest) {
+							if (typeof url === 'string') {
+								const methodUpper = (method || '').toUpperCase();
+								if (methodUpper === 'GET' && isUrlInWhitelist(url)) {
+									url = proxyCdnUrl(url);
+								}
+							}
+							return rawOpen.call(this, method, url, ...rest);
+						};
+
+						return xhr;
+					};
+
+					window.XMLHttpRequest.prototype = OriginalXMLHttpRequest.prototype;
+					Object.setPrototypeOf(window.XMLHttpRequest, OriginalXMLHttpRequest);
+
+					const originalFetch = window.fetch;
+					window.fetch = async function (...args) {
+						if (args.length > 0) {
+							let url = '';
+							let method = 'GET';
+							
+							if (typeof args[0] === 'string') {
+								url = args[0];
+								if (args[1] && args[1].method) {
+									method = args[1].method.toUpperCase();
+								}
+								if (method === 'GET' && isUrlInWhitelist(url)) {
+									args[0] = proxyCdnUrl(url);
+								}
+							} else if (args[0] instanceof Request) {
+								const originalUrl = args[0].url;
+								method = (args[0].method || 'GET').toUpperCase();
+								if (method === 'GET' && isUrlInWhitelist(originalUrl)) {
+									const proxiedUrl = proxyCdnUrl(originalUrl);
+									if (proxiedUrl !== originalUrl) {
+										args[0] = new Request(proxiedUrl, args[0]);
+									}
+								}
+							}
+						}
+						return originalFetch.apply(this, args);
+					};
+				</script>
+			</head>
+			<body>
+				
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZEF-DONUTS | Premium Handcrafted Donuts &amp; Coffee</title>
+    
+    <!-- Enhanced Meta SEO & Social Media -->
+    <meta name="description" content="Indulge in ZEF-DONUTS premium handcrafted donuts. From classic rings to custom orders for events, experience sweetness in every bite. Order online now!">
+    <meta name="keywords" content="donuts, donut shop, premium donuts, coffee, custom cakes, artisan donuts, sweet treats">
+    <meta name="author" content="ZEF-DONUTS DevTeam">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.zef-donuts.com/">
+    <meta property="og:title" content="ZEF-DONUTS | Premium Handcrafted Donuts &amp; Coffee">
+    <meta property="og:description" content="Experience to warmth of fresh donuts every day. Custom orders available for your special events.">
+    <meta property="og:image" content="https://placehold.co/1200x630/FF85A2/FFFFFF?text=ZEF-DONUTS+Premium">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.zef-donuts.com/">
+    <meta property="twitter:title" content="ZEF-DONUTS | Premium Handcrafted Donuts &amp; Coffee">
+    <meta property="twitter:description" content="Experience to warmth of fresh donuts every day. Custom orders available.">
+    <meta property="twitter:image" content="https://placehold.co/1200x630/FF85A2/FFFFFF?text=ZEF-DONUTS+Premium">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://artifacts-cdn.chatglm.site/https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- RemixIcon -->
+    <link href="https://artifacts-cdn.chatglm.site/https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    
+    <!-- Flickity CSS -->
+    <link rel="stylesheet" href="https://artifacts-cdn.chatglm.site/https://unpkg.com/flickity@2/dist/flickity.min.css">
+    
+    <!-- Animate.css (For extra animations) -->
+    <link rel="stylesheet" href="https://artifacts-cdn.chatglm.site/https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://artifacts-cdn.chatglm.site/https://fonts.gstatic.com" crossorigin="">
+    <link href="https://artifacts-cdn.chatglm.site/https://fonts.googleapis.com/css2?family=Fredoka+One&amp;family=Poppins:wght@300;400;500;600;700&amp;family=Open+Sans:wght@400;600&amp;display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 1. Variables & Reset --- */
+        :root {
+            --primary-color: #FF85A2; /* Vibrant Pink */
+            --primary-dark: #E05C80;
+            --primary-light: #FFF0F5;
+            --secondary-color: #6F4E37; /* Chocolate Brown */
+            --secondary-light: #A67B5B;
+            --accent-color: #FFD700; /* Gold/Sprinkles */
+            --bg-white: #FFFFFF;
+            --bg-offwhite: #F9F9F9;
+            --text-main: #2C2C2C;
+            --text-muted: #666666;
+            --footer-bg: #2B1812; /* Deep Dark Brown */
+            
+            /* NEW: Orange Color Palette */
+            --text-orange: #FF8C00; /* Dark Orange for text */
+            --bg-orange: #FFA500; /* Bright Orange for buttons */
+            --shadow-orange: 0 10px 25px rgba(255, 140, 0, 0.4); /* Orange shadow */
+            
+            /* NEW: Cream Gradient Colors */
+            --cream-start: #FFF0F5;
+            --cream-end: #6F4E37;
+            
+            --font-title: 'Fredoka One', cursive;
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Open Sans', sans-serif;
+            
+            --shadow-sm: 0 4px 6px rgba(0,0,0,0.05);
+            --shadow-md: 0 10px 15px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 25px rgba(0,0,0,0.1);
+            
+            /* NEW: Harder Shadow for "Efek Shadow" (3D Lift) */
+            --shadow-lift: 0 15px 30px rgba(0,0,0,0.12);
+            
+            --radius-md: 12px;
+            --radius-lg: 20px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-main);
+            background-color: var(--bg-white);
+            padding-top: 76px; /* Offset for fixed navbar */
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        a { text-decoration: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        button { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+        /* --- 2. Utility Classes --- */
+        .text-primary-custom { color: var(--primary-color) !important; }
+        .text-secondary-custom { color: var(--secondary-color) !important; }
+        .text-orange-custom { color: var(--text-orange) !important; } /* NEW Utility */
+        .bg-primary-custom { background-color: var(--primary-color) !important; }
+        .bg-orange-custom { background-color: var(--bg-orange) !important; } /* NEW Utility */
+        .font-title { font-family: var(--font-title); }
+        .font-heading { font-family: var(--font-heading); }
+        
+        /* Text Shadow for Orange Text (To make it pop) */
+        .text-shadow-orange {
+            text-shadow: 2px 2px 4px rgba(255, 140, 0, 0.4);
+        }
+        
+        /* --- MODIFIED: Brand Gradient Class --- */
+        .brand-text-gradient {
+            display: inline-block;
+            /* Updated Font Family to Alegreya */
+            font-family: 'Alegreya', serif; 
+            font-size: 1.8rem;
+            font-weight: 400; /* Serif fonts need less weight */
+            letter-spacing: 0.5px; /* Spacing for better legibility in Italic */
+            font-style: italic; /* Added Italic Style */
+            /* Changed from Gradient to Solid Orange */
+            color: var(--text-orange);
+            text-shadow: 0 2px 4px rgba(255, 140, 0, 0.4);
+        }
+        
+        .btn-primary-custom {
+            /* UPDATED: Gradient Background */
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-block;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary-custom:hover {
+            /* UPDATED: Gradient Hover */
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-light) 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(111, 78, 55, 0.4);
+        }
+
+        .btn-outline-custom {
+            background-color: transparent;
+            color: var(--secondary-color);
+            border: 2px solid var(--secondary-color);
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        
+        .btn-outline-custom:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        /* --- 3. Navbar --- */
+        .navbar {
+            /* MODIFIED: Background color to #6C2C00 */
+            background-color: #6C2C00;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+            padding: 12px 0;
+            transition: all 0.4s ease;
+        }
+
+        .navbar-scrolled {
+            padding: 8px 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* REMOVED .navbar-brand styles here to avoid conflict with .brand-text-gradient */
+
+        .nav-link {
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            /* Updated text color to white for better visibility against dark background */
+            color: #ffffff; 
+            font-weight: 500;
+            margin: 0 8px;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            background: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 80%;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            background-color: var(--bg-orange); /* Updated Badge to Orange */
+            color: white;
+            font-size: 0.7rem;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+            z-index: 10;
+            /* Added shadow to badge */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* --- 3.5 Sidebar / Offcanvas Styling --- */
+        .sidebar-offcanvas {
+            background: linear-gradient(180deg, #ffffff 0%, #FFF0F5 100%);
+        }
+        
+        .sidebar-link {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            color: var(--text-main);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-link i {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        
+        .sidebar-link:hover {
+            background: white;
+            color: var(--primary-color);
+            transform: translateX(5px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* --- 4. Hero Section (MODIFIED: Cream Gradient) --- */
+        .hero-section {
+            position: relative;
+            padding: 0;
+            height: 85vh; 
+            overflow: hidden;
+            margin-top: -76px; 
+        }
+        
+        /* MODIFIED: Cream Gradient Overlay */
+        .hero-overlay-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Kombinasi gradasi warna cream */
+            background: linear-gradient(135deg, rgba(255, 253, 208, 0.7) 0%, rgba(255, 228, 181, 0.6) 100%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .hero-carousel .carousel-cell {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .hero-carousel .carousel-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: brightness(0.8);
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            z-index: 5;
+        }
+
+        .hero-title {
+            font-family: var(--font-title);
+            font-size: 4rem;
+            color: white;
+            /* Enhanced shadow for readability against cream */
+            text-shadow: 2px 2px 20px rgba(111, 78, 55, 0.6);
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+        
+        .hero-subtitle {
+            color: rgba(44, 44, 44, 0.95); /* Darker text for cream background */
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            /* Added shadow to text */
+            text-shadow: 1px 1px 10px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Flickity Controls Customization */
+        .flickity-page-dots {
+            bottom: 30px;
+            z-index: 10;
+        }
+        .flickity-page-dots .dot {
+            width: 14px;
+            height: 14px;
+            background: white;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+        .flickity-page-dots .dot.is-selected {
+            background: var(--primary-color);
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        /* --- 5. Product Categories (Grid) --- */
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .section-header h2 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            /* Added Gradient Text Effect */
+            background: -webkit-linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-header .line {
+            width: 80px;
+            height: 4px;
+            background: var(--primary-color);
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        .category-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            transition: all 0.4s ease;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lift); /* Updated to hard shadow */
+            border-color: transparent;
+        }
+
+        .cat-img-wrapper {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+            /* NEW: Drop shadow on image wrapper */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .cat-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .category-card:hover .cat-img-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .cat-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-card:hover .cat-overlay { opacity: 1; }
+
+        .cat-content {
+            padding: 20px;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .cat-title {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--secondary-color);
+        }
+
+        /* UPDATED: Price to Orange */
+        .cat-price {
+            color: var(--text-orange);
+            font-weight: 700;
+            font-size: 1.4rem; /* Increased size slightly */
+            text-shadow: 0 2px 4px rgba(255, 140, 0, 0.2);
+        }
+
+        /* --- 6. Featured Products (Simple List) --- */
+        .featured-section {
+            background-color: var(--bg-offwhite);
+            padding: 80px 0;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            border: none;
+            /* NEW: Base shadow for lift effect */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .product-card:hover {
+            /* NEW: Stronger shadow on hover */
+            box-shadow: var(--shadow-lift);
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            /* NEW: Image shadow */
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-img img {
+            width: 100%;
+            transition: transform 0.4s;
+        }
+        
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
+        }
+
+        .badge-new {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            /* UPDATED: Orange Gradient to Badge */
+            background: linear-gradient(45deg, var(--bg-orange), #FF5800);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 2;
+            /* Shadow for badge */
+            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.3);
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            border-radius: 10px;
+            padding: 8px;
+            /* UPDATED: Orange Border */
+            border: 2px solid var(--bg-orange);
+            color: var(--text-orange);
+            background: transparent;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+        
+        .btn-add-cart:hover {
+            /* UPDATED: Orange Background */
+            background: var(--bg-orange);
+            color: white;
+            /* Orange Shadow */
+            box-shadow: var(--shadow-orange);
+        }
+
+        /* --- 7. About Section (Slide About) --- */
+        .about-slide-cell {
+            width: 100%;
+            height: 500px;
+            margin-right: 0; /* Full width per slide */
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            position: relative;
+            /* NEW: Shadow for container */
+            box-shadow: var(--shadow-md);
+        }
+
+        .about-slide-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .about-slide-caption {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
+            background: rgba(255,255,255,0.95);
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            backdrop-filter: blur(5px);
+            /* Shadow for caption */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .about-slide-caption h5 {
+            margin: 0;
+            color: var(--text-orange); /* Updated Title to Orange */
+            font-weight: 800;
+        }
+        .about-slide-caption p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* --- 8. Footer --- */
+        footer {
+            background-color: var(--footer-bg);
+            color: #e0e0e0;
+            padding: 80px 0 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .footer-logo {
+            font-family: 'Poppins', sans-serif; 
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .footer-heading {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 20px;
+            font-family: var(--font-heading);
+        }
+
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: #bbb; }
+        .footer-links a:hover { color: var(--primary-color); padding-left: 5px; }
+
+        .social-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            color: white;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+        
+        .social-icon:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(255, 133, 162, 0.4); /* Added shadow on hover */
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin-top: 60px;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* --- 9. Toast Notification --- */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+        
+        .custom-toast {
+            background: white;
+            border-left: 5px solid var(--primary-color);
+            box-shadow: var(--shadow-lg);
+            border-radius: 4px;
+        }
+
+        /* --- 10. Responsiveness & Media Queries --- */
+        @media (max-width: 991px) {
+            .hero-title { font-size: 2.8rem; }
+            .navbar-collapse {
+                display: none; 
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding-top: 70px; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-section { height: 70vh; margin-top: -70px; }
+            .about-slide-cell { height: 350px; }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title { font-size: 1.8rem; }
+            .section-header h2 { font-size: 2rem; }
+        }
+
+        /* Specific Complex Media Queries (As requested) */
+        @media (max-width: 400px) {
+            .brand-text-gradient { font-size: 1.4rem; }
+            .btn-primary-custom { padding: 8px 16px; font-size: 0.85rem; }
+        }
+        @media (max-width: 330px) {
+            .hero-title { font-size: 1.5rem; }
+            .footer-logo { font-size: 1.6rem; }
+        }
+    </style>
+
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top" id="mainNavbar" style="padding-top: 12px; padding-bottom: 12px;">
+        <div class="container">
+            <!-- MODIFIED: Brand Name with Link to Home (#home) -->
+            <a class="navbar-brand" href="https://chat.z.ai/space/d0n0xbakeb30-art#home">
+                <span class="brand-text-gradient">PAND🍩NUT</span>
+            </a>
+            
+            <!-- Sidebar Toggle Button (MODIFIED: Background color to brown) -->
+            <button class="btn btn-light border-0 me-2 p-2 rounded-circle text-white" style="background-color: brown;" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Toggle Sidebar Menu">
+                <i class="ri-menu-line fs-4 text-primary-custom"></i>
+            </button>
+
+            <!-- Desktop Menu (Visible on Large Screens) -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="https://chat.z.ai/space/d0n0xbakeb30-art#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://chat.z.ai/space/d0n0xbakeb30-art#menu">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://chat.z.ai/space/d0n0xbakeb30-art#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://chat.z.ai/space/d0n0xbakeb30-art#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+                
+            <div class="d-flex align-items-center ms-auto ms-lg-0 gap-3">
+                <!-- Cart Dropdown -->
+                <div class="dropdown">
+                    <button class="btn btn-link text-decoration-none position-relative p-0" type="button" id="cartDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ri-shopping-cart-2-line fs-4 text-secondary-custom" data-bs-toggle="tooltip" data-bs-placement="bottom" aria-label="Your Shopping Cart" data-bs-original-title="Your Shopping Cart"></i>
+                        <span class="cart-badge" id="cartCount">0</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 rounded-4" aria-labelledby="cartDropdownBtn" style="min-width: 220px;">
+                        <li><h6 class="dropdown-header fw-bold">Your Cart</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li class="d-flex justify-content-between px-3 mb-2">
+                            <span class="small text-muted">Items:</span>
+                            <span class="fw-bold text-primary-custom" id="dropdownCartCount">0</span>
+                        </li>
+                        <li><a class="dropdown-item text-center fw-bold" href="https://chat.z.ai/space/d0n0xbakeb30-art#"><i class="ri-shopping-bag-3-line me-1"></i> View Cart</a></li>
+                        <li><a class="dropdown-item text-center bg-primary-custom text-white mt-2 rounded-3" href="https://chat.z.ai/space/d0n0xbakeb30-art#" data-bs-toggle="modal" data-bs-target="#checkoutModal">Checkout Now</a></li>
+                    </ul>
+                </div>
+                
+                <a href="https://chat.z.ai/space/d0n0xbakeb30-art#menu" class="btn btn-primary-custom">Order Now</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Complex Sidebar (Offcanvas) -->
+    <div class="offcanvas offcanvas-start sidebar-offcanvas" tabindex="-1" id="sidebarMenu" aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header border-bottom-0 pb-0">
+            <!-- MODIFIED: Brand Name in Sidebar with Link to Home (#home) -->
+            <a href="https://chat.z.ai/space/d0n0xbakeb30-art#home" data-bs-dismiss="offcanvas" class="text-decoration-none text-reset d-block">
+                <h5 class="offcanvas-title fs-2 brand-text-gradient" id="sidebarMenuLabel">PAND🍩NUT</h5>
+            </a>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            
+            <!-- Sidebar Navigation -->
+            <div class="my-4">
+                <a class="sidebar-link text-decoration-none" href="https://chat.z.ai/space/d0n0xbakeb30-art#home" data-bs-dismiss="offcanvas">
+                    <i class="ri-home-4-line"></i> Home
+                </a>
+                <a class="sidebar-link text-decoration-none" href="https://chat.z.ai/space/d0n0xbakeb30-art#menu" data-bs-dismiss="offcanvas">
+                    <i class="ri-restaurant-2-line"></i> Menu
+                </a>
+                <a class="sidebar-link text-decoration-none" href="https://chat.z.ai/space/d0n0xbakeb30-art#about" data-bs-dismiss="offcanvas">
+                    <i class="ri-team-line"></i> About Us
+                </a>
+                <a class="sidebar-link text-decoration-none" href="https://chat.z.ai/space/d0n0xbakeb30-art#contact" data-bs-dismiss="offcanvas">
+                    <i class="ri-customer-service-2-line"></i> Contact
+                </a>
+            </div>
+
+            <!-- Sidebar Feature: Newsletter -->
+            <div class="bg-white p-4 rounded-4 shadow-sm mt-auto">
+                <h6 class="fw-bold mb-3 text-orange-custom">Get Sweet Deals!</h6>
+                <p class="small text-muted mb-3">Subscribe to our newsletter for exclusive discounts.</p>
+                <form onsubmit="event.preventDefault(); showToast(&#39;Subscribed successfully!&#39;);">
+                    <div class="input-group mb-2">
+                        <input type="email" class="form-control border-0 bg-light" placeholder="Email Address" required="">
+                        <button class="btn btn-primary-custom rounded-end" type="submit"><i class="ri-send-plane-fill"></i></button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Sidebar Footer Info -->
+            <div class="mt-4 text-center text-muted small">
+                <div class="mb-2">
+                    <i class="ri-phone-line me-1"></i> +1 (555) 123-4567
+                </div>
+                <div>
+                    © 2025 PAND🍩NUT
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <!-- NEW: Cream Gradient Overlay -->
+        <div class="hero-overlay-gradient"></div>
+        
+        <div class="hero-carousel main-carousel flickity-enabled is-draggable" data-flickity="{ &quot;wrapAround&quot;: true, &quot;autoPlay&quot;: 3000 }" tabindex="0">
+            
+            <!-- Slide 1 -->
+            
+
+            <!-- Slide 2 -->
+            
+
+            <!-- Slide 3 -->
+            
+        <div class="flickity-viewport" style="height: 0px; touch-action: pan-y;"><div class="flickity-slider" style="left: 0px; transform: translateX(0%);"><div class="carousel-cell is-selected" style="position: absolute; left: 0px; transform: translateX(0%);">
+                <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/1920x1080/FF85A2/FFFFFF?text=Fresh+Daily+Donuts" alt="Fresh Donuts">
+                <div class="hero-content animate__animated animate__fadeIn">
+                    <h1 class="hero-title">Freshness You Can Taste</h1>
+                    <p class="hero-subtitle">Handcrafted daily using premium ingredients for perfect bite.</p>
+                    <div>
+                        <a href="https://chat.z.ai/space/d0n0xbakeb30-art#menu" class="btn btn-primary-custom">Shop Menu</a>
+                        <a href="https://chat.z.ai/space/d0n0xbakeb30-art#about" class="btn btn-outline-custom ms-2 text-white border-white">Our Story</a>
+                    </div>
+                </div>
+            </div><div class="carousel-cell" style="position: absolute; left: 0px; transform: translateX(100%);" aria-hidden="true">
+                <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/1920x1080/6F4E37/FFFFFF?text=Premium+Coffee+Pairing" alt="Coffee &amp; Donuts">
+                <div class="hero-content animate__animated animate__fadeIn">
+                    <h1 class="hero-title">Perfect Coffee Pairing</h1>
+                    <p class="hero-subtitle">Experience our signature blends alongside our best-selling glazed rings.</p>
+                    <div>
+                        <a href="https://chat.z.ai/space/d0n0xbakeb30-art#menu" class="btn btn-primary-custom">View Drinks</a>
+                    </div>
+                </div>
+            </div><div class="carousel-cell" style="position: absolute; left: 0px; transform: translateX(200%);" aria-hidden="true">
+                <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/1920x1080/F8E1C7/333333?text=Custom+Events" alt="Custom Events">
+                <div class="hero-content animate__animated animate__fadeIn">
+                    <h1 class="hero-title">Celebrate with Donuts</h1>
+                    <p class="hero-subtitle">Custom towers and boxes for birthdays, weddings, and corporate events.</p>
+                    <div>
+                        <a href="https://chat.z.ai/space/d0n0xbakeb30-art#about" class="btn btn-primary-custom">Contact Us</a>
+                    </div>
+                </div>
+            </div></div></div><button class="flickity-button flickity-prev-next-button previous" type="button" aria-label="Previous"><svg class="flickity-button-icon" viewBox="0 0 100 100"><path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow"></path></svg></button><button class="flickity-button flickity-prev-next-button next" type="button" aria-label="Next"><svg class="flickity-button-icon" viewBox="0 0 100 100"><path d="M 10,50 L 60,100 L 70,90 L 30,50  L 70,10 L 60,0 Z" class="arrow" transform="translate(100, 100) rotate(180) "></path></svg></button><ol class="flickity-page-dots"><li class="dot is-selected" aria-label="Page dot 1" aria-current="step"></li><li class="dot" aria-label="Page dot 2"></li><li class="dot" aria-label="Page dot 3"></li></ol></div>
+    </section>
+
+    <!-- Features Strip -->
+    <section class="py-4 bg-white shadow-sm position-relative" style="z-index: 10;">
+        <div class="container">
+            <div class="row text-center g-4">
+                <div class="col-md-3 col-6">
+                    <i class="ri-truck-line fs-2 text-primary-custom d-block mb-2"></i>
+                    <h6 class="fw-bold">Fast Delivery</h6>
+                    <small class="text-muted">Same-day delivery available</small>
+                </div>
+                <div class="col-md-3 col-6">
+                    <i class="ri-cake-3-line fs-2 text-primary-custom d-block mb-2"></i>
+                    <h6 class="fw-bold">Freshly Baked</h6>
+                    <small class="text-muted">Made from scratch daily</small>
+                </div>
+                <div class="col-md-3 col-6">
+                    <i class="ri-award-line fs-2 text-primary-custom d-block mb-2"></i>
+                    <h6 class="fw-bold">Premium Quality</h6>
+                    <small class="text-muted">100% Original ingredients</small>
+                </div>
+                <div class="col-md-3 col-6">
+                    <i class="ri-customer-service-2-line fs-2 text-primary-custom d-block mb-2"></i>
+                    <h6 class="fw-bold">24/7 Support</h6>
+                    <small class="text-muted">We are here to help</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Categories -->
+    <section id="menu" class="py-5 bg-cream-choco">
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Menu Categories</h2>
+                <div class="line"></div>
+                <p class="mt-3 text-muted">Explore our wide variety of delicious treats</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- Category 1 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="category-card">
+                        <div class="cat-img-wrapper">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/600x400/F8E1C7/333333?text=Classic+Rings" alt="Classic Rings">
+                            <div class="cat-overlay">
+                                <button class="btn btn-light btn-sm rounded-pill px-3" onclick="scrollToProducts(&#39;classic&#39;)">View Items</button>
+                            </div>
+                        </div>
+                        <div class="cat-content">
+                            <div>
+                                <h3 class="cat-title">Classic Rings</h3>
+                                <p class="text-muted small">Original glaze, chocolate, and sugar coated.</p>
+                            </div>
+                            <!-- UPDATED: Orange Price -->
+                            <div class="cat-price">Starts from $2.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="category-card">
+                        <div class="cat-img-wrapper">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/600x400/FF85A2/FFFFFF?text=Special+Glaze" alt="Special Glaze">
+                            <div class="cat-overlay">
+                                <button class="btn btn-light btn-sm rounded-pill px-3" onclick="scrollToProducts(&#39;glaze&#39;)">View Items</button>
+                            </div>
+                        </div>
+                        <div class="cat-content">
+                            <div>
+                                <h3 class="cat-title">Special Glaze</h3>
+                                <p class="text-muted small">Strawberry, Matcha, Taro, and Blueberry flavors.</p>
+                            </div>
+                            <!-- UPDATED: Orange Price -->
+                            <div class="cat-price">Starts from $2.50</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="col-md-4 col-sm-6">
+                    <div class="category-card">
+                        <div class="cat-img-wrapper">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/600x400/6F4E37/FFFFFF?text=Filled+Delights" alt="Filled Delights">
+                            <div class="cat-overlay">
+                                <button class="btn btn-light btn-sm rounded-pill px-3" onclick="scrollToProducts(&#39;filled&#39;)">View Items</button>
+                            </div>
+                        </div>
+                        <div class="cat-content">
+                            <div>
+                                <h3 class="cat-title">Filled Delights</h3>
+                                <p class="text-muted small">Nutella, Bavarian Cream, and Salted Caramel.</p>
+                            </div>
+                            <!-- UPDATED: Orange Price -->
+                            <div class="cat-price">Starts from $3.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products Grid -->
+    <section class="featured-section" id="products-list">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="text-dark">Best Sellers</h2>
+                <div class="line"></div>
+            </div>
+
+            <div class="row g-4" id="productRow">
+                <!-- Product 1 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="badge-new">Best Seller</div>
+                        <div class="product-img">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/400x300/FFD700/333333?text=Strawberry+Sprinkle" alt="Strawberry Sprinkle">
+                        </div>
+                        <div class="text-center">
+                            <h5 class="fw-bold mb-1">Strawberry Sprinkle</h5>
+                            <!-- UPDATED: Orange Price -->
+                            <p class="text-orange-custom fw-bold mb-3 fs-5">$2.50</p>
+                            <button class="btn-add-cart" onclick="addToCart(&#39;Strawberry Sprinkle&#39;, 2.50)">
+                                <i class="ri-shopping-bag-3-line"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="product-img">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/400x300/6F4E37/FFFFFF?text=Double+Chocolate" alt="Double Chocolate">
+                        </div>
+                        <div class="text-center">
+                            <h5 class="fw-bold mb-1">Double Chocolate</h5>
+                            <!-- UPDATED: Orange Price -->
+                            <p class="text-orange-custom fw-bold mb-3 fs-5">$2.80</p>
+                            <button class="btn-add-cart" onclick="addToCart(&#39;Double Chocolate&#39;, 2.80)">
+                                <i class="ri-shopping-bag-3-line"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="badge-new bg-orange-custom">New</div>
+                        <div class="product-img">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/400x300/90EE90/FFFFFF?text=Matcha+Delight" alt="Matcha Delight">
+                        </div>
+                        <div class="text-center">
+                            <h5 class="fw-bold mb-1">Matcha Delight</h5>
+                            <!-- UPDATED: Orange Price -->
+                            <p class="text-orange-custom fw-bold mb-3 fs-5">$3.00</p>
+                            <button class="btn-add-cart" onclick="addToCart(&#39;Matcha Delight&#39;, 3.00)">
+                                <i class="ri-shopping-bag-3-line"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="product-card h-100">
+                        <div class="product-img">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/400x300/FF69B4/FFFFFF?text=Raspberry+Filled" alt="Raspberry Filled">
+                        </div>
+                        <div class="text-center">
+                            <h5 class="fw-bold mb-1">Raspberry Filled</h5>
+                            <!-- UPDATED: Orange Price -->
+                            <p class="text-orange-custom fw-bold mb-3 fs-5">$3.20</p>
+                            <button class="btn-add-cart" onclick="addToCart(&#39;Raspberry Filled&#39;, 3.20)">
+                                <i class="ri-shopping-bag-3-line"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="https://chat.z.ai/space/d0n0xbakeb30-art#" class="btn btn-outline-dark rounded-pill px-5">View Full Menu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About / Story Snippet (MODIFIED: Slide About) -->
+    <section id="about" class="py-5 bg-white">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 order-md-2">
+                    <!-- NEW: Flickity Carousel for About Section -->
+                    <div class="about-carousel main-carousel flickity-enabled is-draggable" data-flickity="{ &quot;wrapAround&quot;: true, &quot;autoPlay&quot;: 4000, &quot;prevNextButtons&quot;: false }" tabindex="0">
+                        
+                        <!-- Slide 1: Kitchen -->
+                        
+
+                        <!-- Slide 2: Ingredients -->
+                        
+
+                        <!-- Slide 3: Hand Made -->
+                        
+                    <div class="flickity-viewport" style="height: 500px; touch-action: pan-y;"><div class="flickity-slider" style="left: 0px; transform: translateX(0%);"><div class="about-slide-cell is-selected" style="position: absolute; left: 0px; transform: translateX(0%);">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/800x600/F8E1C7/333333?text=Our+Daily+Kitchen" alt="Our Kitchen">
+                            <div class="about-slide-caption">
+                                <!-- UPDATED: Orange Title -->
+                                <h5 class="text-orange-custom">Our Daily Kitchen</h5>
+                                <p>Where's that magic happens every morning at 4 AM.</p>
+                            </div>
+                        </div><div class="about-slide-cell" style="position: absolute; left: 0px; transform: translateX(100%);" aria-hidden="true">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/800x600/FF85A2/FFFFFF?text=Premium+Ingredients" alt="Premium Ingredients">
+                            <div class="about-slide-caption">
+                                <!-- UPDATED: Orange Title -->
+                                <h5 class="text-orange-custom">Premium Ingredients</h5>
+                                <p>Sourced locally for to freshest taste.</p>
+                            </div>
+                        </div><div class="about-slide-cell" style="position: absolute; left: 0px; transform: translateX(200%);" aria-hidden="true">
+                            <img src="https://artifacts-cdn.chatglm.site/https://placehold.co/800x600/6F4E37/FFFFFF?text=Hand+Crafted+Love" alt="Hand Crafted">
+                            <div class="about-slide-caption">
+                                <!-- UPDATED: Orange Title -->
+                                <h5 class="text-orange-custom">Hand Crafted with Love</h5>
+                                <p>Every donut is shaped by our master bakers.</p>
+                            </div>
+                        </div></div></div><ol class="flickity-page-dots"><li class="dot is-selected" aria-label="Page dot 1" aria-current="step"></li><li class="dot" aria-label="Page dot 2"></li><li class="dot" aria-label="Page dot 3"></li></ol></div>
+                </div>
+                <div class="col-md-6 order-md-1 pe-md-5">
+                    <h6 class="text-primary-custom text-uppercase fw-bold ls-2">Our Story</h6>
+                    <h2 class="display-6 fw-bold mb-4 text-secondary-custom">Baked with Love, Served with Joy</h2>
+                    <p class="text-muted">ZEF-DONUTS started from a small kitchen with a big dream: to create to fluffiest, most flavorful donuts using time-honored recipes and modern twists.</p>
+                    <p class="text-muted">We believe that a donut is more than just a snack; it's a moment of happiness. That's why we source to to finest flour, real dairy, and fresh fruits for our glazes.</p>
+                    <a href="https://chat.z.ai/space/d0n0xbakeb30-art#" class="text-secondary-custom fw-bold text-decoration-none mt-3 d-inline-block">Read More About Us <i class="ri-arrow-right-line"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <!-- MODIFIED: Added text-orange-custom class -->
+                    <a href="https://chat.z.ai/space/d0n0xbakeb30-art#home" class="text-decoration-none">
+                        <div class="footer-logo text-orange-custom">PAND🍩NUT</div>
+                    </a>
+                    <p class="mb-4 text-muted">Premium donut shop serving happiness since 2020. Visit us for to sweetest experience in town.</p>
+                    <div class="d-flex gap-2">
+                        <a href="https://facebook.com/pandonutsofficial" class="social-icon" target="_blank" aria-label="Visit our Facebook"><i class="ri-facebook-fill"></i></a>
+                        <a href="https://instagram.com/pandonutsofficial" class="social-icon" target="_blank" aria-label="Visit our Instagram"><i class="ri-instagram-line"></i></a>
+                        <a href="https://tiktok.com/@pandonuts" class="social-icon" target="_blank" aria-label="Visit our TikTok"><i class="ri-tiktok-fill"></i></a>
+                        <a href="https://twitter.com/pandonuts" class="social-icon" target="_blank" aria-label="Visit our Twitter"><i class="ri-twitter-x-line"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="footer-heading">Quick Links</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="https://chat.z.ai/space/d0n0xbakeb30-art#home">Home</a></li>
+                        <li><a href="https://chat.z.ai/space/d0n0xbakeb30-art#menu">Menu</a></li>
+                        <li><a href="https://chat.z.ai/space/d0n0xbakeb30-art#about">About Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-heading">Contact Us</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><i class="ri-map-pin-line me-2 text-primary-custom"></i> 123 Sugar Lane, Sweet City</li>
+                        <li><i class="ri-phone-line me-2 text-primary-custom"></i> +1 (555) 123-4567</li>
+                        <li><i class="ri-mail-line me-2 text-primary-custom"></i> hello@zef-donuts.com</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="footer-heading">Opening Hours</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="d-flex justify-content-between"><span>Mon - Fri</span> <span>08:00 - 20:00</span></li>
+                        <li class="d-flex justify-content-between"><span>Saturday</span> <span>08:00 - 22:00</span></li>
+                        <li class="d-flex justify-content-between"><span>Sunday</span> <span>09:00 - 18:00</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <!-- MODIFIED: Added text-orange-custom class -->
+                <p class="mb-0 text-orange-custom">Copyright © 2025 PAND🍩NUT. All Rights Reserved. Designed with <i class="ri-heart-fill text-danger"></i></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Checkout Modal -->
+    <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+          <div class="modal-header border-0">
+            <h5 class="modal-title fw-bold text-secondary-custom" id="checkoutModalLabel">Checkout</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="alert alert-info bg-primary-custom text-white border-0">
+              <i class="ri-information-line me-2"></i> Total Items: <span id="modalCartCount">0</span>
+            </div>
+            <form id="checkoutForm" onsubmit="processCheckout(event)">
+                <div class="mb-3">
+                    <label for="checkoutName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="checkoutName" required="" placeholder="John Doe">
+                </div>
+                <div class="mb-3">
+                    <label for="checkoutAddress" class="form-label">Delivery Address</label>
+                    <textarea class="form-control" id="checkoutAddress" rows="3" required="" placeholder="123 Sugar Lane..."></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="checkoutPayment" class="form-label">Payment Method</label>
+                    <select class="form-select" id="checkoutPayment">
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="ewallet">E-Wallet (GoPay/OVO)</option>
+                    </select>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <span class="fw-bold">Total Price:</span>
+                    <span class="fs-4 fw-bold text-orange-custom" id="modalTotalPrice">$0.00</span>
+                </div>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary-custom" id="btnConfirmOrder">Confirm Order</button>
+                </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container p-3">
+        <div id="cartToast" class="toast custom-toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="ri-check-line text-success fs-4 me-2"></i>
+                    <div id="toastMessage">Item added to cart!</div>
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScripts -->
+    <script src="https://artifacts-cdn.chatglm.site/https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://artifacts-cdn.chatglm.site/https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. Navbar Scroll Effect
+            const navbar = document.getElementById('mainNavbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('navbar-scrolled');
+                    navbar.style.paddingTop = '8px';
+                    navbar.style.paddingBottom = '8px';
+                } else {
+                    navbar.classList.remove('navbar-scrolled');
+                    navbar.style.paddingTop = '12px';
+                    navbar.style.paddingBottom = '12px';
+                }
+            });
+
+            // 2. Initialize Tooltips (Bootstrap)
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+
+            // 3. Smooth Scroll for Anchor Links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Close Sidebar if open
+                        const sidebarEl = document.getElementById('sidebarMenu');
+                        const sidebarInstance = bootstrap.Offcanvas.getInstance(sidebarEl);
+                        if(sidebarInstance) sidebarInstance.hide();
+
+                        // Scroll
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // 4. Checkout Modal Data Update
+            const checkoutModal = document.getElementById('checkoutModal');
+            checkoutModal.addEventListener('show.bs.modal', function () {
+                document.getElementById('modalCartCount').textContent = cartTotalItems;
+                // Simple mock price calculation
+                let mockPrice = (cartTotalItems * 3.50).toFixed(2); 
+                document.getElementById('modalTotalPrice').textContent = '$' + mockPrice;
+            });
+
+            console.log("ZEF-DONUTS Website Initialized Successfully");
+        });
+
+        // 5. Cart Logic (Frontend Simulation)
+        let cartTotalItems = 0;
+        const cartCountElement = document.getElementById('cartCount');
+        const dropdownCartCountElement = document.getElementById('dropdownCartCount');
+        
+        function addToCart(itemName, price) {
+            cartTotalItems++;
+            cartCountElement.textContent = cartTotalItems;
+            
+            // Update dropdown counter if it exists
+            if(dropdownCartCountElement) {
+                dropdownCartCountElement.textContent = cartTotalItems;
+            }
+            
+            // Animation for cart badge
+            cartCountElement.style.transform = "scale(1.5)";
+            setTimeout(() => {
+                cartCountElement.style.transform = "scale(1)";
+            }, 200);
+
+            // Show Toast Notification
+            showToast(`Added <strong>${itemName}</strong> to cart!`);
+        }
+
+        // 6. Checkout Logic
+        function processCheckout(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnConfirmOrder');
+            const originalText = btn.innerText;
+            
+            // Simulate loading
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            
+            setTimeout(() => {
+                // Close modal
+                const modalEl = document.getElementById('checkoutModal');
+                const modalInstance = bootstrap.Modal.getInstance(modalEl);
+                modalInstance.hide();
+                
+                // Reset UI
+                cartTotalItems = 0;
+                cartCountElement.textContent = '0';
+                if(dropdownCartCountElement) dropdownCartCountElement.textContent = '0';
+                
+                // Reset Button
+                btn.disabled = false;
+                btn.innerText = originalText;
+                
+                // Show Success Toast
+                showToast("Order placed successfully! Thank you.");
+                document.getElementById('checkoutForm').reset();
+            }, 2000);
+        }
+
+        // 7. Toast Notification Logic
+        function showToast(message) {
+            const toastEl = document.getElementById('cartToast');
+            const toastBody = document.getElementById('toastMessage');
+            
+            toastBody.innerHTML = message;
+            const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+            toast.show();
+        }
+
+        // 8. Scroll to specific product section
+        function scrollToProducts(category) {
+            const targetSection = document.getElementById('products-list');
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+            
+            showToast(`Showing ${category} products (Demo)`);
+        }
+    </script>
+
+
+			
+		
+</body></html>
